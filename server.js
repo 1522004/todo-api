@@ -2,19 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const PORT = 3000;
-
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Connect to MongoDB running in Docker
 mongoose.connect('mongodb://mongo:27017/tododb', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => console.log("✅ Connected to MongoDB"))
-  .catch(err => console.error("❌ MongoDB Connection Error:", err));
-
-// Define Todo Schema
+}).then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("MongoDB Connection Error:", err));
 const todoSchema = new mongoose.Schema({ task: { type: String, required: true },done: { type: Boolean, default: false }});
 const Todo = mongoose.model('Todo', todoSchema);
 
@@ -40,8 +34,6 @@ app.put('/todos/:id', async (req, res) => {
     if (!updatedTodo) return res.status(404).json({ message: "Todo not found" });
     res.status(200).json(updatedTodo);
 });
-
-// 4. DELETE /todos/:id – Delete a todo
 app.delete('/todos/:id', async (req, res) => {
     const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
     if (!deletedTodo) return res.status(404).json({ message: "Todo not found" });
@@ -49,4 +41,4 @@ app.delete('/todos/:id', async (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => console.log(`🚀 ToDo Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`ToDo Server running at http://localhost:${PORT}`));
